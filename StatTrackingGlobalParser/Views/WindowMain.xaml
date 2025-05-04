@@ -7,7 +7,7 @@
         xmlns:viewModels="clr-namespace:StatTrackingGlobalParser.ViewModels"
         xmlns:utilities="clr-namespace:StatTrackingGlobalParser.Utilities"
         mc:Ignorable="d"
-        Title="StatTrackingGlobalParser" Height="768" Width="1024">
+        Title="{Binding Title, FallbackValue='Commandos.StatTrackingGlobalParser'}" Height="768" Width="1024">
 
     <Window.DataContext>
         <viewModels:VmWindowMain />

@@ -4,13 +4,23 @@ using StatTrackingGlobalParser.Models;
 using StatTrackingGlobalParser.Utilities;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Windows;
 
 namespace StatTrackingGlobalParser.ViewModels
 {
-    internal partial class VmWindowMain : ObservableObject
+    public partial class VmWindowMain : ObservableObject
     {
+        #region Constructors
+
+        public VmWindowMain()
+        {
+            _title = $"Commandos.StatTrackingGlobalParser ({Assembly.GetExecutingAssembly().GetName().Version})";
+        }
+
+        #endregion
+
         #region Fields
 
         private const string KeyCompletionTime = "CompletionTime"; // Map data start identifier
@@ -27,6 +37,9 @@ namespace StatTrackingGlobalParser.ViewModels
         #endregion
 
         #region Properties
+
+        [ObservableProperty]
+        private string? _title;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(ParseCommand))]
