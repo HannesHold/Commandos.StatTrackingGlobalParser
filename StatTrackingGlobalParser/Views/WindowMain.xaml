@@ -37,10 +37,85 @@
 
         <GroupBox Grid.Row="1" Header="Results:">
             <TabControl>
+
                 <TabItem>
                     <TabItem.Header>
                         <TextBlock>
-                            <Run Text="Boolean properties" />
+                            <Run Text="Missions view" />
+                            <Run Text=" (" />
+                            <Run Text="{Binding Missions.Count, Mode=OneWay, FallbackValue='0'}" />
+                            <Run Text=")" />
+                        </TextBlock>
+                    </TabItem.Header>
+                    <ListBox ItemsSource="{Binding Missions}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{Binding AchievementToolTip}" />
+                                    </TextBlock.ToolTip>
+                                    
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Value}" Value="False">
+                                                    <Setter Property="Background" Value="LightGray" />
+                                                    <Setter Property="Foreground" Value="Black" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Value}" Value="True">
+                                                    <Setter Property="Background" Value="LightGreen" />
+                                                    <Setter Property="Foreground" Value="Black" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </TabItem>
+
+                <TabItem>
+                    <TabItem.Header>
+                        <TextBlock>
+                            <Run Text="Achievement view" />
+                            <Run Text=" (" />
+                            <Run Text="{Binding Achievements.Count, Mode=OneWay, FallbackValue='0'}" />
+                            <Run Text=")" />
+                        </TextBlock>
+                    </TabItem.Header>
+                    <ListBox ItemsSource="{Binding Achievements}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{Binding AchievementToolTip}" />
+                                    </TextBlock.ToolTip>
+                                    
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Value}" Value="False">
+                                                    <Setter Property="Background" Value="LightGray" />
+                                                    <Setter Property="Foreground" Value="Black" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Value}" Value="True">
+                                                    <Setter Property="Background" Value="LightGreen" />
+                                                    <Setter Property="Foreground" Value="Black" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </TabItem>
+
+                <TabItem>
+                    <TabItem.Header>
+                        <TextBlock>
+                            <Run Text="Parsed boolean properties" />
                             <Run Text=" (" />
                             <Run Text="{Binding BoolProperties.Count, Mode=OneWay, FallbackValue='0'}" />
                             <Run Text=")" />
@@ -69,6 +144,7 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
                 </TabItem>
+
             </TabControl>
         </GroupBox>
 

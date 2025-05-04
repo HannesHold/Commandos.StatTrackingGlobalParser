@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using StatTrackingGlobalParser.Interfaces;
 using StatTrackingGlobalParser.Models;
 using StatTrackingGlobalParser.Utilities;
 using System.Collections.ObjectModel;
@@ -48,6 +49,12 @@ namespace StatTrackingGlobalParser.ViewModels
         [ObservableProperty]
         private ObservableCollection<BoolPropertyModel>? _boolProperties = [];
 
+        [ObservableProperty]
+        private ObservableCollection<AchievementModel>? _achievements = [];
+
+        [ObservableProperty]
+        private ObservableCollection<MissionModel>? _missions = [];
+
         #endregion
 
         #region Commands
@@ -64,10 +71,16 @@ namespace StatTrackingGlobalParser.ViewModels
 
                 // Clear collections
                 BoolProperties?.Clear();
+                Achievements?.Clear();
+                Missions?.Clear();
 
                 // Start parsing
                 ReadFileContent();
                 InterpretFileContent();
+
+                // Populate
+                PopulateAchievements();
+                PopulateMissions();
             }
             catch (Exception ex)
             {
@@ -124,6 +137,97 @@ namespace StatTrackingGlobalParser.ViewModels
                 };
 
                 BoolProperties?.Add(boolPropertyModel);
+            }
+        }
+
+        private void PopulateAchievements()
+        {
+            foreach (var achievementNameAchievementToolTipMapping in KnownDataHelper.AchievementNameAchievementToolTipMappings)
+            {
+                foreach (var mapNameMissionNameMapping in KnownDataHelper.MapNameMissionNameMappings)
+                {
+                    var achievementModel = new AchievementModel
+                    {
+                        AchievementName = achievementNameAchievementToolTipMapping.Key,
+                        AchievementToolTip = KnownDataHelper.GetAchievementNameTooltipForAchievementName(achievementNameAchievementToolTipMapping.Key),
+                        MapName = mapNameMissionNameMapping.Key,
+                        MissionName = mapNameMissionNameMapping.Value
+                    };
+
+                    // Special achievement only for a single mission
+                    if (achievementModel.AchievementName == KnownDataHelper.AchievementNameShadowTactics &&
+                        achievementModel.MissionName != KnownDataHelper.MissionNameOperationReckoning)
+                    {
+                        continue;
+                    }
+
+                    EvaluateReachedAchievementValue(achievementModel);
+
+                    Achievements?.Add(achievementModel);
+                }
+            }
+        }
+
+        private void PopulateMissions()
+        {
+            foreach (var mapNameMissionNameMapping in KnownDataHelper.MapNameMissionNameMappings)
+            {
+                foreach (var achievementNameAchievementToolTipMapping in KnownDataHelper.AchievementNameAchievementToolTipMappings)
+                {
+                    var missionModel = new MissionModel
+                    {
+                        MissionName = mapNameMissionNameMapping.Value,
+                        MapName = mapNameMissionNameMapping.Key,
+                        AchievementName = achievementNameAchievementToolTipMapping.Key,
+                        AchievementToolTip = KnownDataHelper.GetAchievementNameTooltipForAchievementName(achievementNameAchievementToolTipMapping.Key)
+                    };
+
+                    // Special achievement only for a single mission
+                    if (missionModel.AchievementName == KnownDataHelper.AchievementNameShadowTactics &&
+                        missionModel.MissionName != KnownDataHelper.MissionNameOperationReckoning)
+                    {
+                        continue;
+                    }
+
+                    EvaluateReachedAchievementValue(missionModel);
+
+                    Missions?.Add(missionModel);
+                }
+            }
+        }
+
+        private void EvaluateReachedAchievementValue(IModelHelper modelHelper)
+        {
+            BoolPropertyModel? resultBoolPropertyModel;
+
+            switch (modelHelper.GetAchievementName())
+            {
+                case KnownDataHelper.AchievementNameKnockThemOutWithKindness:
+                    resultBoolPropertyModel = BoolProperties?.Where(x => x.VariableName == KnownDataHelper.AchievementNameKnockThemOutWithKindnessVariableName &&
+                                                                        x.MapName == modelHelper.GetMapName()).FirstOrDefault();
+
+                    modelHelper.SetValue(resultBoolPropertyModel is not null && resultBoolPropertyModel.Value);
+                    break;
+                case KnownDataHelper.AchievementNameNoStoneLeftUnkilled:
+                    resultBoolPropertyModel = BoolProperties?.Where(x => x.VariableName == KnownDataHelper.AchievementNameNoStoneLeftUnkilledVariableName &&
+                                                                        x.MapName == modelHelper.GetMapName()).FirstOrDefault();
+
+                    modelHelper.SetValue(resultBoolPropertyModel is not null && resultBoolPropertyModel.Value);
+                    break;
+                case KnownDataHelper.AchievementNameShadowTactics:
+                    resultBoolPropertyModel = BoolProperties?.Where(x => x.VariableName == KnownDataHelper.AchievementNameShadowTacticsVariableName &&
+                                                    x.MapName == modelHelper.GetMapName()).FirstOrDefault();
+
+                    modelHelper.SetValue(resultBoolPropertyModel is not null && resultBoolPropertyModel.Value == false);
+                    break;
+                case KnownDataHelper.AchievementNameIfTheWorldWereAVillage:
+                    resultBoolPropertyModel = BoolProperties?.Where(x => x.VariableName == KnownDataHelper.AchievementNameIfTheWorldWereAVillageVariableName &&
+                                                    x.MapName == modelHelper.GetMapName()).FirstOrDefault();
+
+                    modelHelper.SetValue(resultBoolPropertyModel is not null && resultBoolPropertyModel.Value == true);
+                    break;
+                default:
+                    break;
             }
         }
 

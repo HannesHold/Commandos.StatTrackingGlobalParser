@@ -84,6 +84,5 @@ public static class ParseHelper
 
         if (!direction) { characters.Reverse(); }
         return Encoding.UTF8.GetString([.. characters]);
-
     }
 }

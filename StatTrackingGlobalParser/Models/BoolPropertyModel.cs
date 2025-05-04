@@ -1,6 +1,6 @@
 ﻿namespace StatTrackingGlobalParser.Models;
 
-public class BoolPropertyModel
+public class BoolPropertyModel : BaseModel
 {
     #region Overrides
 
@@ -15,15 +15,11 @@ public class BoolPropertyModel
 
     public int Map { get; set; }
 
-    public string? MapName { get; set; }
-
     public int StartIndex { get; set; }
 
     public string? VariableName { get; set; }
 
     public string? HexValue { get; set; }
-
-    public bool Value { get; set; }
 
     #endregion
 }
