@@ -88,7 +88,7 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Grid Width="{Binding ElementName=CheckBoxColumnMissions, Path=Width}">
-                                                <CheckBox IsEnabled="False" IsChecked="{Binding Value}" HorizontalAlignment="Center" />
+                                                <CheckBox IsEnabled="False" IsChecked="{Binding Value}" HorizontalAlignment="Center" Margin="-6,0,0,0" />
                                             </Grid>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -127,7 +127,7 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Grid Width="{Binding ElementName=CheckBoxColumnAchievements, Path=Width}">
-                                                <CheckBox IsEnabled="False" IsChecked="{Binding Value}" HorizontalAlignment="Center" />
+                                                <CheckBox IsEnabled="False" IsChecked="{Binding Value}" HorizontalAlignment="Center" Margin="-6,0,0,0" />
                                             </Grid>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -158,7 +158,7 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Grid Width="{Binding ElementName=CheckBoxColumnBoolProperties, Path=Width}">
-                                                <CheckBox IsEnabled="False" IsChecked="{Binding Value}" HorizontalAlignment="Center" />
+                                                <CheckBox IsEnabled="False" IsChecked="{Binding Value}" HorizontalAlignment="Center" Margin="-6,0,0,0" />
                                             </Grid>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
