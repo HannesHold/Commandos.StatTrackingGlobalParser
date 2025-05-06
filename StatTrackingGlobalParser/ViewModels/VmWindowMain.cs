@@ -4,10 +4,12 @@ using StatTrackingGlobalParser.Interfaces;
 using StatTrackingGlobalParser.Models;
 using StatTrackingGlobalParser.Utilities;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows;
+using System.Windows.Data;
 
 namespace StatTrackingGlobalParser.ViewModels
 {
@@ -17,7 +19,7 @@ namespace StatTrackingGlobalParser.ViewModels
 
         public VmWindowMain()
         {
-            _title = $"Commandos.StatTrackingGlobalParser ({Assembly.GetExecutingAssembly().GetName().Version})";
+            Title = $"Commandos.StatTrackingGlobalParser ({Assembly.GetExecutingAssembly().GetName().Version})";           
         }
 
         #endregion
@@ -33,7 +35,7 @@ namespace StatTrackingGlobalParser.ViewModels
         private string? _currentParserMapName;
 
         private readonly int _hexValueLength = 14;
-        private readonly int _valueSkip = 9;
+        private readonly int _valueSkip = 9;      
 
         #endregion
 
@@ -50,14 +52,29 @@ namespace StatTrackingGlobalParser.ViewModels
         private ObservableCollection<BoolPropertyModel>? _boolProperties = [];
 
         [ObservableProperty]
+        private ICollectionView? _boolPropertiesView;
+
+        [ObservableProperty]
         private ObservableCollection<AchievementModel>? _achievements = [];
+
+        [ObservableProperty]
+        private ICollectionView? _achievementsView;
 
         [ObservableProperty]
         private ObservableCollection<MissionModel>? _missions = [];
 
+        [ObservableProperty]
+        private ICollectionView? _missionsView;
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ClearQuickFilterCommand))]
+        private string? _quickFilter;
+
         #endregion
 
         #region Commands
+
+        #region ParseCommand
 
         [RelayCommand(CanExecute = nameof(CanParse))]
         private void Parse()
@@ -69,10 +86,13 @@ namespace StatTrackingGlobalParser.ViewModels
                 _currentParserMap = 0;
                 _currentParserMapName = null;
 
-                // Clear collections
-                BoolProperties?.Clear();
-                Achievements?.Clear();
-                Missions?.Clear();
+                // Initialize collections
+                BoolProperties = [];
+                BoolPropertiesView = CollectionViewSource.GetDefaultView(BoolProperties);
+                Achievements = [];
+                AchievementsView = CollectionViewSource.GetDefaultView(Achievements);
+                Missions = [];
+                MissionsView = CollectionViewSource.GetDefaultView(Missions);
 
                 // Start parsing
                 ReadFileContent();
@@ -90,7 +110,84 @@ namespace StatTrackingGlobalParser.ViewModels
 
         private bool CanParse()
         {
-            return File.Exists(FilePath);
+            return System.IO.File.Exists(FilePath);
+        }
+
+        #endregion
+
+        #region ResetCommand
+
+        [RelayCommand(CanExecute = nameof(CanReset))]
+        private void Reset()
+        {
+            try
+            {
+                // Initialize collections
+                BoolProperties = [];
+                BoolPropertiesView = CollectionViewSource.GetDefaultView(BoolProperties);
+                Achievements = [];
+                AchievementsView = CollectionViewSource.GetDefaultView(Achievements);
+                Missions = [];
+                MissionsView = CollectionViewSource.GetDefaultView(Missions);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK);
+            }
+        }
+
+        private static bool CanReset()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region ClearQuickFilterCommand
+
+        [RelayCommand(CanExecute = nameof(CanClearQuickFilter))]
+        private void ClearQuickFilter()
+        {
+            try
+            {
+                QuickFilter = null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK);
+            }
+        }
+
+        private bool CanClearQuickFilter()
+        {
+            return !string.IsNullOrEmpty(QuickFilter);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Partial methods
+
+        partial void OnQuickFilterChanged(string? value)
+        {
+            if (BoolPropertiesView is not null)
+            {
+                BoolPropertiesView.Filter = o => string.IsNullOrEmpty(value) || $"{o}".ToLower().Contains(value.ToLower());
+                BoolPropertiesView.Refresh();
+            }
+
+            if (AchievementsView is not null)
+            {
+                AchievementsView.Filter = o => string.IsNullOrEmpty(value) || $"{o}".ToLower().Contains(value.ToLower());
+                AchievementsView.Refresh();
+            }
+
+            if (MissionsView is not null)
+            {
+                MissionsView.Filter = o => string.IsNullOrEmpty(value) || $"{o}".ToLower().Contains(value.ToLower());
+                MissionsView.Refresh();
+            }
         }
 
         #endregion
@@ -99,7 +196,7 @@ namespace StatTrackingGlobalParser.ViewModels
 
         private void ReadFileContent()
         {
-            _fileContent = File.ReadAllBytes(FilePath);
+            _fileContent = System.IO.File.ReadAllBytes(FilePath);
         }
 
         private void InterpretFileContent()

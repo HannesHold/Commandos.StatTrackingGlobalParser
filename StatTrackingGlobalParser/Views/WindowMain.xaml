@@ -21,17 +21,37 @@
 
         <GroupBox Grid.Row="0" Header="Settings:">
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" Margin="2">
+                <StackPanel Grid.Row="0" Grid.Column="0" Margin="2">
                     <TextBlock Text="File path:" />
                     <TextBox Text="{Binding FilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
-                <Button Grid.Column="1" Margin="2" Content="Parse" Command="{Binding ParseCommand, Mode=OneTime}"/>
+                <StackPanel Grid.Row="1" Grid.Column="0" Margin="2">
+                    <TextBlock Text="Quick filter:" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox Grid.Column="0" Margin="0,2" Text="{Binding QuickFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button Grid.Column="1" Margin="2,2,0,2" Content="Clear quick filter" Command="{Binding ClearQuickFilterCommand, Mode=OneTime}" />
+                    </Grid>
+
+                </StackPanel>
+
+                <Button Grid.Column="1" Grid.Row="0" Margin="2,2" Content="Parse" Command="{Binding ParseCommand, Mode=OneTime}" />
+                <Button Grid.Column="1" Grid.Row="1" Margin="2,4" Content="Reset" Command="{Binding ResetCommand, Mode=OneTime}" />
             </Grid>
         </GroupBox>
 
@@ -43,36 +63,28 @@
                         <TextBlock>
                             <Run Text="Missions view" />
                             <Run Text=" (" />
-                            <Run Text="{Binding Missions.Count, Mode=OneWay, FallbackValue='0'}" />
+                            <Run Text="{Binding MissionsView.Count, Mode=OneWay, FallbackValue='0'}" />
                             <Run Text=")" />
                         </TextBlock>
                     </TabItem.Header>
-                    <ListBox ItemsSource="{Binding Missions}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}">
-                                    <TextBlock.ToolTip>
-                                        <TextBlock Text="{Binding AchievementToolTip}" />
-                                    </TextBlock.ToolTip>
-                                    
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Value}" Value="False">
-                                                    <Setter Property="Background" Value="LightGray" />
-                                                    <Setter Property="Foreground" Value="Black" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Value}" Value="True">
-                                                    <Setter Property="Background" Value="LightGreen" />
-                                                    <Setter Property="Foreground" Value="Black" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <ListView ItemsSource="{Binding MissionsView}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Mission name" Width="200" DisplayMemberBinding="{Binding MissionName}" />
+                                <GridViewColumn Header="Map name" Width="200" DisplayMemberBinding="{Binding MapName}" />
+                                <GridViewColumn Header="Achievement name" Width="200" DisplayMemberBinding="{Binding AchievementName}" />
+                                <GridViewColumn Header="Value" Width="100" x:Name="CheckBoxColumnMissions">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid Width="{Binding ElementName=CheckBoxColumnMissions, Path=Width}">
+                                                <CheckBox IsEnabled="False" IsChecked="{Binding Value}" HorizontalAlignment="Center" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
                 </TabItem>
 
                 <TabItem>
@@ -80,36 +92,28 @@
                         <TextBlock>
                             <Run Text="Achievement view" />
                             <Run Text=" (" />
-                            <Run Text="{Binding Achievements.Count, Mode=OneWay, FallbackValue='0'}" />
+                            <Run Text="{Binding AchievementsView.Count, Mode=OneWay, FallbackValue='0'}" />
                             <Run Text=")" />
                         </TextBlock>
                     </TabItem.Header>
-                    <ListBox ItemsSource="{Binding Achievements}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}">
-                                    <TextBlock.ToolTip>
-                                        <TextBlock Text="{Binding AchievementToolTip}" />
-                                    </TextBlock.ToolTip>
-                                    
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Value}" Value="False">
-                                                    <Setter Property="Background" Value="LightGray" />
-                                                    <Setter Property="Foreground" Value="Black" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Value}" Value="True">
-                                                    <Setter Property="Background" Value="LightGreen" />
-                                                    <Setter Property="Foreground" Value="Black" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <ListView ItemsSource="{Binding AchievementsView}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Achievement name" Width="200" DisplayMemberBinding="{Binding AchievementName}" />
+                                <GridViewColumn Header="Map name" Width="200" DisplayMemberBinding="{Binding MapName}" />
+                                <GridViewColumn Header="Mission name" Width="200" DisplayMemberBinding="{Binding MissionName}" />
+                                <GridViewColumn Header="Value" Width="100" x:Name="CheckBoxColumnAchievements">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid Width="{Binding ElementName=CheckBoxColumnAchievements, Path=Width}">
+                                                <CheckBox IsEnabled="False" IsChecked="{Binding Value}" HorizontalAlignment="Center" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
                 </TabItem>
 
                 <TabItem>
@@ -117,32 +121,30 @@
                         <TextBlock>
                             <Run Text="Parsed boolean properties" />
                             <Run Text=" (" />
-                            <Run Text="{Binding BoolProperties.Count, Mode=OneWay, FallbackValue='0'}" />
+                            <Run Text="{Binding BoolPropertiesView.Count, Mode=OneWay, FallbackValue='0'}" />
                             <Run Text=")" />
                         </TextBlock>
                     </TabItem.Header>
-                    <ListBox ItemsSource="{Binding BoolProperties}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Value}" Value="False">
-                                                    <Setter Property="Background" Value="LightGray" />
-                                                    <Setter Property="Foreground" Value="Black" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Value}" Value="True">
-                                                    <Setter Property="Background" Value="LightGreen" />
-                                                    <Setter Property="Foreground" Value="Black" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <ListView ItemsSource="{Binding BoolPropertiesView}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Map" Width="100" DisplayMemberBinding="{Binding Map}" />
+                                <GridViewColumn Header="Map name" Width="200" DisplayMemberBinding="{Binding MapName}" />
+                                <GridViewColumn Header="Start index" Width="100" DisplayMemberBinding="{Binding StartIndex}" />
+                                <GridViewColumn Header="Variable name" Width="200" DisplayMemberBinding="{Binding VariableName}" />
+                                <GridViewColumn Header="Hex value" Width="240" DisplayMemberBinding="{Binding HexValue}" />
+                                <GridViewColumn Header="Value" Width="100" x:Name="CheckBoxColumnBoolProperties">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid Width="{Binding ElementName=CheckBoxColumnBoolProperties, Path=Width}">
+                                                <CheckBox IsEnabled="False" IsChecked="{Binding Value}" HorizontalAlignment="Center" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
                 </TabItem>
 
             </TabControl>
