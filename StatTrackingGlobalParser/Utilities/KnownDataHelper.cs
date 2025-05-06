@@ -50,6 +50,7 @@ public static class KnownDataHelper
     public const string AchievementNameNoStoneLeftUnkilledVariableName = "bWereAllEnemiesKilled";
     public const string AchievementNameShadowTacticsVariableName = "bWasGlobalAlarmSetOff";
     public const string AchievementNameIfTheWorldWereAVillageVariableName = "bWasGlobalAlarmSetOff";
+
     #endregion
 
     #region Properties

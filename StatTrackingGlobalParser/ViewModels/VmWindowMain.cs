@@ -146,6 +146,13 @@ namespace StatTrackingGlobalParser.ViewModels
             {
                 foreach (var mapNameMissionNameMapping in KnownDataHelper.MapNameMissionNameMappings)
                 {
+                    // Special achievement only for a single mission
+                    if (achievementNameAchievementToolTipMapping.Key == KnownDataHelper.AchievementNameShadowTactics &&
+                        mapNameMissionNameMapping.Value != KnownDataHelper.MissionNameOperationReckoning)
+                    {
+                        continue;
+                    }
+
                     var achievementModel = new AchievementModel
                     {
                         AchievementName = achievementNameAchievementToolTipMapping.Key,
@@ -153,13 +160,6 @@ namespace StatTrackingGlobalParser.ViewModels
                         MapName = mapNameMissionNameMapping.Key,
                         MissionName = mapNameMissionNameMapping.Value
                     };
-
-                    // Special achievement only for a single mission
-                    if (achievementModel.AchievementName == KnownDataHelper.AchievementNameShadowTactics &&
-                        achievementModel.MissionName != KnownDataHelper.MissionNameOperationReckoning)
-                    {
-                        continue;
-                    }
 
                     EvaluateReachedAchievementValue(achievementModel);
 
@@ -174,6 +174,13 @@ namespace StatTrackingGlobalParser.ViewModels
             {
                 foreach (var achievementNameAchievementToolTipMapping in KnownDataHelper.AchievementNameAchievementToolTipMappings)
                 {
+                    // Special achievement only for a single mission
+                    if (achievementNameAchievementToolTipMapping.Key == KnownDataHelper.AchievementNameShadowTactics &&
+                        mapNameMissionNameMapping.Value != KnownDataHelper.MissionNameOperationReckoning)
+                    {
+                        continue;
+                    }
+
                     var missionModel = new MissionModel
                     {
                         MissionName = mapNameMissionNameMapping.Value,
@@ -181,13 +188,6 @@ namespace StatTrackingGlobalParser.ViewModels
                         AchievementName = achievementNameAchievementToolTipMapping.Key,
                         AchievementToolTip = KnownDataHelper.GetAchievementNameTooltipForAchievementName(achievementNameAchievementToolTipMapping.Key)
                     };
-
-                    // Special achievement only for a single mission
-                    if (missionModel.AchievementName == KnownDataHelper.AchievementNameShadowTactics &&
-                        missionModel.MissionName != KnownDataHelper.MissionNameOperationReckoning)
-                    {
-                        continue;
-                    }
 
                     EvaluateReachedAchievementValue(missionModel);
 
@@ -203,26 +203,26 @@ namespace StatTrackingGlobalParser.ViewModels
             switch (modelHelper.GetAchievementName())
             {
                 case KnownDataHelper.AchievementNameKnockThemOutWithKindness:
-                    resultBoolPropertyModel = BoolProperties?.Where(x => x.VariableName == KnownDataHelper.AchievementNameKnockThemOutWithKindnessVariableName &&
-                                                                        x.MapName == modelHelper.GetMapName()).FirstOrDefault();
+                    resultBoolPropertyModel = BoolProperties?.FirstOrDefault(x => x.VariableName == KnownDataHelper.AchievementNameKnockThemOutWithKindnessVariableName &&
+                                                                        x.MapName == modelHelper.GetMapName());
 
                     modelHelper.SetValue(resultBoolPropertyModel is not null && resultBoolPropertyModel.Value);
                     break;
                 case KnownDataHelper.AchievementNameNoStoneLeftUnkilled:
-                    resultBoolPropertyModel = BoolProperties?.Where(x => x.VariableName == KnownDataHelper.AchievementNameNoStoneLeftUnkilledVariableName &&
-                                                                        x.MapName == modelHelper.GetMapName()).FirstOrDefault();
+                    resultBoolPropertyModel = BoolProperties?.FirstOrDefault(x => x.VariableName == KnownDataHelper.AchievementNameNoStoneLeftUnkilledVariableName &&
+                                                                        x.MapName == modelHelper.GetMapName());
 
                     modelHelper.SetValue(resultBoolPropertyModel is not null && resultBoolPropertyModel.Value);
                     break;
                 case KnownDataHelper.AchievementNameShadowTactics:
-                    resultBoolPropertyModel = BoolProperties?.Where(x => x.VariableName == KnownDataHelper.AchievementNameShadowTacticsVariableName &&
-                                                    x.MapName == modelHelper.GetMapName()).FirstOrDefault();
+                    resultBoolPropertyModel = BoolProperties?.FirstOrDefault(x => x.VariableName == KnownDataHelper.AchievementNameShadowTacticsVariableName &&
+                                                    x.MapName == modelHelper.GetMapName());
 
                     modelHelper.SetValue(resultBoolPropertyModel is not null && resultBoolPropertyModel.Value == false);
                     break;
                 case KnownDataHelper.AchievementNameIfTheWorldWereAVillage:
-                    resultBoolPropertyModel = BoolProperties?.Where(x => x.VariableName == KnownDataHelper.AchievementNameIfTheWorldWereAVillageVariableName &&
-                                                    x.MapName == modelHelper.GetMapName()).FirstOrDefault();
+                    resultBoolPropertyModel = BoolProperties?.FirstOrDefault(x => x.VariableName == KnownDataHelper.AchievementNameIfTheWorldWereAVillageVariableName &&
+                                                    x.MapName == modelHelper.GetMapName());
 
                     modelHelper.SetValue(resultBoolPropertyModel is not null && resultBoolPropertyModel.Value == true);
                     break;
@@ -232,6 +232,5 @@ namespace StatTrackingGlobalParser.ViewModels
         }
 
         #endregion
-
     }
 }
