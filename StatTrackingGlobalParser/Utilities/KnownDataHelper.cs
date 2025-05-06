@@ -8,7 +8,7 @@ public static class KnownDataHelper
 
     public const string MapNameBritishCompound = "BritishCompound";
     public const string MapNameWeatherstation = "Weatherstation";
-    public const string MapNameFortCapuzo1 = "FortCapuzzo1";
+    public const string MapNameFortCapuzzo1 = "FortCapuzzo1";
     public const string MapNameTrainBridge = "TrainBridge";
     public const string MapNameLighthouse = "Lighthouse";
     public const string MapNameChannelIslands = "ChannelIslands";
@@ -23,7 +23,7 @@ public static class KnownDataHelper
 
     public const string MissionNameOperationDaybreak = "Operation Daybreak";
     public const string MissionNameOperationFalchion = "Operation Falchion";
-    public const string MissionNameOperationNightfal = "Operation Nightfall";
+    public const string MissionNameOperationNightfall = "Operation Nightfall";
     public const string MissionNameOperationCleaver = "Operation Cleaver";
     public const string MissionNameOperationRapture = "Operation Rapture";
     public const string MissionNameOperationBlindfold = "Operation Blindfold";
@@ -36,20 +36,20 @@ public static class KnownDataHelper
     public const string MissionNameOperationGuardian = "Operation Guardian";
     public const string MissionNameOperationReckoning = "Operation Reckoning";
 
+    public const string AchievementNameIfTheWorldWereAVillage = "If The World Were A Village";
     public const string AchievementNameKnockThemOutWithKindness = "Knock Them Out With Kindness";
     public const string AchievementNameNoStoneLeftUnkilled = "No Stone Left Unkilled";
     public const string AchievementNameShadowTactics = "Shadow Tactics";
-    public const string AchievementNameIfTheWorldWereAVillage = "If The World Were A Village";
 
+    public const string AchievementNameIfTheWorldWereAVillageToolTip = "Set off a Global Alarm during every Operation at least once";
     public const string AchievementNameKnockThemOutWithKindnessToolTip = "Complete all Operations without killing any German Enemies";
     public const string AchievementNameNoStoneLeftUnkilledToolTip = "Kill 2369 German Enemies across all Operations";
     public const string AchievementNameShadowTacticsToolTip = "Complete 'Operation Reckoning' without raising an Alarm on Soldier or Veteran Difficulty";
-    public const string AchievementNameIfTheWorldWereAVillageToolTip = "Set off a Global Alarm during every Operation at least once";
 
+    public const string AchievementNameIfTheWorldWereAVillageVariableName = "bWasGlobalAlarmSetOff";
     public const string AchievementNameKnockThemOutWithKindnessVariableName = "bWasNoEnemyKilled";
     public const string AchievementNameNoStoneLeftUnkilledVariableName = "bWereAllEnemiesKilled";
-    public const string AchievementNameShadowTacticsVariableName = "bWasGlobalAlarmSetOff";
-    public const string AchievementNameIfTheWorldWereAVillageVariableName = "bWasGlobalAlarmSetOff";
+    public const string AchievementNameShadowTacticsVariableName = "bWasGlobalAlarmSetOff";   
 
     #endregion
 
@@ -59,7 +59,7 @@ public static class KnownDataHelper
     {
         { MapNameBritishCompound, MissionNameOperationDaybreak },
         { MapNameWeatherstation, MissionNameOperationFalchion },
-        { MapNameFortCapuzo1, MissionNameOperationNightfal },
+        { MapNameFortCapuzzo1, MissionNameOperationNightfall },
         { MapNameTrainBridge, MissionNameOperationCleaver },
         { MapNameLighthouse, MissionNameOperationRapture },
         { MapNameChannelIslands, MissionNameOperationBlindfold },
@@ -75,10 +75,10 @@ public static class KnownDataHelper
 
     public static readonly IReadOnlyDictionary<string, string> AchievementNameAchievementToolTipMappings = new Dictionary<string, string>()
     {
+        { AchievementNameIfTheWorldWereAVillage, AchievementNameIfTheWorldWereAVillageToolTip },
         { AchievementNameKnockThemOutWithKindness, AchievementNameKnockThemOutWithKindnessToolTip },
         { AchievementNameNoStoneLeftUnkilled, AchievementNameNoStoneLeftUnkilledToolTip },
-        { AchievementNameShadowTactics, AchievementNameShadowTacticsToolTip },
-        { AchievementNameIfTheWorldWereAVillage, AchievementNameIfTheWorldWereAVillageToolTip }
+        { AchievementNameShadowTactics, AchievementNameShadowTacticsToolTip }       
     };
 
     #endregion
