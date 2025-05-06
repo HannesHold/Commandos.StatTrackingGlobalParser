@@ -8,7 +8,7 @@ public static class KnownDataHelper
 
     public const string MapNameBritishCompound = "BritishCompound";
     public const string MapNameWeatherstation = "Weatherstation";
-    public const string MapNameFortCapuzo1 = "FortCapuzo1";
+    public const string MapNameFortCapuzo1 = "FortCapuzzo1";
     public const string MapNameTrainBridge = "TrainBridge";
     public const string MapNameLighthouse = "Lighthouse";
     public const string MapNameChannelIslands = "ChannelIslands";
