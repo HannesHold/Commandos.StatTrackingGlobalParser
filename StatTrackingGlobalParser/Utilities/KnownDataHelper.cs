@@ -23,7 +23,7 @@ public static class KnownDataHelper
 
     public const string MissionNameOperationDaybreak = "Operation Daybreak";
     public const string MissionNameOperationFalchion = "Operation Falchion";
-    public const string MissionNameOperationNightfal = "Operation Nightfal";
+    public const string MissionNameOperationNightfal = "Operation Nightfall";
     public const string MissionNameOperationCleaver = "Operation Cleaver";
     public const string MissionNameOperationRapture = "Operation Rapture";
     public const string MissionNameOperationBlindfold = "Operation Blindfold";
@@ -42,7 +42,7 @@ public static class KnownDataHelper
     public const string AchievementNameIfTheWorldWereAVillage = "If The World Were A Village";
 
     public const string AchievementNameKnockThemOutWithKindnessToolTip = "Complete all Operations without killing any German Enemies";
-    public const string AchievementNameNoStoneLeftUnkilledToolTip = "Kill all German Enemies across all Operations";
+    public const string AchievementNameNoStoneLeftUnkilledToolTip = "Kill 2369 German Enemies across all Operations";
     public const string AchievementNameShadowTacticsToolTip = "Complete 'Operation Reckoning' without raising an Alarm on Soldier or Veteran Difficulty";
     public const string AchievementNameIfTheWorldWereAVillageToolTip = "Set off a Global Alarm during every Operation at least once";
 

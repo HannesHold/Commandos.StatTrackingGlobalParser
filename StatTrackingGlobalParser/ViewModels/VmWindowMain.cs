@@ -101,6 +101,9 @@ namespace StatTrackingGlobalParser.ViewModels
                 // Populate
                 PopulateAchievements();
                 PopulateMissions();
+
+                // Update views with filter
+                UpdateViewsWithFilter(QuickFilter);
             }
             catch (Exception ex)
             {
@@ -110,7 +113,7 @@ namespace StatTrackingGlobalParser.ViewModels
 
         private bool CanParse()
         {
-            return System.IO.File.Exists(FilePath);
+            return File.Exists(FilePath);
         }
 
         #endregion
@@ -171,23 +174,7 @@ namespace StatTrackingGlobalParser.ViewModels
 
         partial void OnQuickFilterChanged(string? value)
         {
-            if (BoolPropertiesView is not null)
-            {
-                BoolPropertiesView.Filter = o => string.IsNullOrEmpty(value) || $"{o}".ToLower().Contains(value.ToLower());
-                BoolPropertiesView.Refresh();
-            }
-
-            if (AchievementsView is not null)
-            {
-                AchievementsView.Filter = o => string.IsNullOrEmpty(value) || $"{o}".ToLower().Contains(value.ToLower());
-                AchievementsView.Refresh();
-            }
-
-            if (MissionsView is not null)
-            {
-                MissionsView.Filter = o => string.IsNullOrEmpty(value) || $"{o}".ToLower().Contains(value.ToLower());
-                MissionsView.Refresh();
-            }
+            UpdateViewsWithFilter(value);
         }
 
         #endregion
@@ -196,7 +183,7 @@ namespace StatTrackingGlobalParser.ViewModels
 
         private void ReadFileContent()
         {
-            _fileContent = System.IO.File.ReadAllBytes(FilePath);
+            _fileContent = File.ReadAllBytes(FilePath);
         }
 
         private void InterpretFileContent()
@@ -325,6 +312,27 @@ namespace StatTrackingGlobalParser.ViewModels
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void UpdateViewsWithFilter(string ? value)
+        {
+            if (BoolPropertiesView is not null)
+            {
+                BoolPropertiesView.Filter = o => string.IsNullOrEmpty(value) || $"{o}".Contains(value, StringComparison.CurrentCultureIgnoreCase);
+                BoolPropertiesView.Refresh();
+            }
+
+            if (AchievementsView is not null)
+            {
+                AchievementsView.Filter = o => string.IsNullOrEmpty(value) || $"{o}".Contains(value, StringComparison.CurrentCultureIgnoreCase);
+                AchievementsView.Refresh();
+            }
+
+            if (MissionsView is not null)
+            {
+                MissionsView.Filter = o => string.IsNullOrEmpty(value) || $"{o}".Contains(value, StringComparison.CurrentCultureIgnoreCase);
+                MissionsView.Refresh();
             }
         }
 

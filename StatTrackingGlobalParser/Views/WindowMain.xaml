@@ -68,11 +68,22 @@
                         </TextBlock>
                     </TabItem.Header>
                     <ListView ItemsSource="{Binding MissionsView}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <TextBlock Text="{Binding AchievementToolTip}"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Mission name" Width="200" DisplayMemberBinding="{Binding MissionName}" />
                                 <GridViewColumn Header="Map name" Width="200" DisplayMemberBinding="{Binding MapName}" />
-                                <GridViewColumn Header="Achievement name" Width="200" DisplayMemberBinding="{Binding AchievementName}" />
+                                <GridViewColumn Header="Achievement name" Width="200" DisplayMemberBinding="{Binding AchievementName}">
+                                </GridViewColumn>
                                 <GridViewColumn Header="Value" Width="100" x:Name="CheckBoxColumnMissions">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
@@ -97,6 +108,16 @@
                         </TextBlock>
                     </TabItem.Header>
                     <ListView ItemsSource="{Binding AchievementsView}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <TextBlock Text="{Binding AchievementToolTip}"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Achievement name" Width="200" DisplayMemberBinding="{Binding AchievementName}" />
