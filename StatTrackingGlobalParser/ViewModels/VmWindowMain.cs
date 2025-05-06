@@ -315,7 +315,7 @@ namespace StatTrackingGlobalParser.ViewModels
             }
         }
 
-        private void UpdateViewsWithFilter(string ? value)
+        private void UpdateViewsWithFilter(string? value)
         {
             if (BoolPropertiesView is not null)
             {
