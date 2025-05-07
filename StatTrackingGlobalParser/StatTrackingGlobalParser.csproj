@@ -6,20 +6,27 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UseWPF>true</UseWPF>
-		<Version>1.0.0.2</Version>
-		<AssemblyVersion>1.0.0.2</AssemblyVersion>
-		<FileVersion>1.0.0.2</FileVersion>
+		<Version>1.0.0.3</Version>
+		<AssemblyVersion>1.0.0.3</AssemblyVersion>
+		<FileVersion>1.0.0.3</FileVersion>
+		<Product>StatTrackingGlobalParser</Product>
+		<ApplicationIcon>Assets\Logo.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Remove="Assets\**" />
-		<EmbeddedResource Remove="Assets\**" />
-		<None Remove="Assets\**" />
-		<Page Remove="Assets\**" />
+	  <None Remove="Assets\Logo.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Assets\Logo.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Assets\Logo.png" />
 	</ItemGroup>
 
 </Project>

@@ -41,10 +41,10 @@ public static class KnownDataHelper
     public const string AchievementNameNoStoneLeftUnkilled = "No Stone Left Unkilled";
     public const string AchievementNameShadowTactics = "Shadow Tactics";
 
-    public const string AchievementNameIfTheWorldWereAVillageToolTip = "Set off a Global Alarm during every Operation at least once";
-    public const string AchievementNameKnockThemOutWithKindnessToolTip = "Complete all Operations without killing any German Enemies";
-    public const string AchievementNameNoStoneLeftUnkilledToolTip = "Kill 2369 German Enemies across all Operations";
-    public const string AchievementNameShadowTacticsToolTip = "Complete 'Operation Reckoning' without raising an Alarm on Soldier or Veteran Difficulty";
+    public const string AchievementNameIfTheWorldWereAVillageToolTip = "Set Off A Global Alarm During Every Operation At Least Once";
+    public const string AchievementNameKnockThemOutWithKindnessToolTip = "Complete All Operations Without Killing Any German Enemies";
+    public const string AchievementNameNoStoneLeftUnkilledToolTip = "Kill 2369 German Enemies Across All Operations";
+    public const string AchievementNameShadowTacticsToolTip = "Complete 'Operation Reckoning' Without Raising An Alarm On Soldier Or Veteran Difficulty";
 
     public const string AchievementNameIfTheWorldWereAVillageVariableName = "bWasGlobalAlarmSetOff";
     public const string AchievementNameKnockThemOutWithKindnessVariableName = "bWasNoEnemyKilled";
