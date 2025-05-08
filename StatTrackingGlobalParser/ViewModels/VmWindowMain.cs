@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using StatTrackingGlobalParser.Interfaces;
 using StatTrackingGlobalParser.Models;
 using StatTrackingGlobalParser.Utilities;
 using System.Collections.ObjectModel;
@@ -55,13 +54,13 @@ public partial class VmWindowMain : ObservableObject
     private ICollectionView? _boolPropertiesView;
 
     [ObservableProperty]
-    private ObservableCollection<AchievementModel>? _achievements = [];
+    private ObservableCollection<AchievementMissionModel>? _achievements = [];
 
     [ObservableProperty]
     private ICollectionView? _achievementsView;
 
     [ObservableProperty]
-    private ObservableCollection<MissionModel>? _missions = [];
+    private ObservableCollection<AchievementMissionModel>? _missions = [];
 
     [ObservableProperty]
     private ICollectionView? _missionsView;
@@ -212,7 +211,7 @@ public partial class VmWindowMain : ObservableObject
 
             var boolPropertyModel = new BoolPropertyModel()
             {
-                Map = _currentParserMap,
+                MapNo = _currentParserMap,
                 MapName = _currentParserMapName,
                 StartIndex = index,
                 VariableName = variableName,
@@ -226,10 +225,16 @@ public partial class VmWindowMain : ObservableObject
 
     private void PopulateAchievements()
     {
+        var achievements = new List<AchievementMissionModel>();
+
         foreach (var achievementNameAchievementToolTipMapping in KnownDataHelper.AchievementNameAchievementToolTipMappings)
         {
+            int missionNo = 0;
+
             foreach (var mapNameMissionNameMapping in KnownDataHelper.MapNameMissionNameMappings)
             {
+                missionNo++;
+
                 // Special achievement only for a single mission
                 if (achievementNameAchievementToolTipMapping.Key == KnownDataHelper.AchievementNameShadowTactics &&
                     mapNameMissionNameMapping.Value != KnownDataHelper.MissionNameOperationReckoning)
@@ -237,25 +242,36 @@ public partial class VmWindowMain : ObservableObject
                     continue;
                 }
 
-                var achievementModel = new AchievementModel
+                var achievementModel = new AchievementMissionModel
                 {
                     AchievementName = achievementNameAchievementToolTipMapping.Key,
                     AchievementToolTip = KnownDataHelper.GetAchievementNameTooltipForAchievementName(achievementNameAchievementToolTipMapping.Key),
                     MapName = mapNameMissionNameMapping.Key,
+                    MissionNo = missionNo,
                     MissionName = mapNameMissionNameMapping.Value
                 };
 
                 EvaluateReachedAchievementValue(achievementModel);
 
-                Achievements?.Add(achievementModel);
+                achievements.Add(achievementModel);
             }
         }
+
+        EvaluateReachedAchievements(achievements);
+
+        Achievements = [.. achievements];
+        AchievementsView = CollectionViewSource.GetDefaultView(Achievements);
     }
 
     private void PopulateMissions()
     {
+        var missions = new List<AchievementMissionModel>();
+        int missionNo = 0;
+
         foreach (var mapNameMissionNameMapping in KnownDataHelper.MapNameMissionNameMappings)
         {
+            missionNo++;
+
             foreach (var achievementNameAchievementToolTipMapping in KnownDataHelper.AchievementNameAchievementToolTipMappings)
             {
                 // Special achievement only for a single mission
@@ -265,57 +281,134 @@ public partial class VmWindowMain : ObservableObject
                     continue;
                 }
 
-                var missionModel = new MissionModel
+                var achievementMissionModel = new AchievementMissionModel
                 {
+                    MissionNo = missionNo,
                     MissionName = mapNameMissionNameMapping.Value,
                     MapName = mapNameMissionNameMapping.Key,
                     AchievementName = achievementNameAchievementToolTipMapping.Key,
                     AchievementToolTip = KnownDataHelper.GetAchievementNameTooltipForAchievementName(achievementNameAchievementToolTipMapping.Key)
                 };
 
-                EvaluateReachedAchievementValue(missionModel);
+                EvaluateReachedAchievementValue(achievementMissionModel);
 
-                Missions?.Add(missionModel);
+                missions.Add(achievementMissionModel);
             }
         }
+
+        EvaluateReachedAchievements(missions);
+
+        Missions = [.. missions];
+        MissionsView = CollectionViewSource.GetDefaultView(Missions);
     }
 
-    private void EvaluateReachedAchievementValue(IModelHelper modelHelper)
+    private void EvaluateReachedAchievementValue(AchievementMissionModel achievementMissionModel)
     {
         BoolPropertyModel? resultBoolPropertyModel;
 
-        switch (modelHelper.GetAchievementName())
+        switch (achievementMissionModel.AchievementName)
         {
+            case KnownDataHelper.AchievementNameIfTheWorldWereAVillage:
+                resultBoolPropertyModel = BoolProperties?.FirstOrDefault(x =>
+                    x.VariableName == KnownDataHelper.AchievementNameIfTheWorldWereAVillageVariableName &&
+                    x.MapName == achievementMissionModel.MapName);
+                achievementMissionModel.Value = resultBoolPropertyModel is not null && resultBoolPropertyModel.Value == true;
+
+                break;
             case KnownDataHelper.AchievementNameKnockThemOutWithKindness:
                 resultBoolPropertyModel = BoolProperties?.FirstOrDefault(x =>
                     x.VariableName == KnownDataHelper.AchievementNameKnockThemOutWithKindnessVariableName &&
-                    x.MapName == modelHelper.GetMapName());
+                    x.MapName == achievementMissionModel.MapName);
+                achievementMissionModel.Value = resultBoolPropertyModel is not null && resultBoolPropertyModel.Value;
 
-                modelHelper.SetValue(resultBoolPropertyModel is not null && resultBoolPropertyModel.Value);
                 break;
             case KnownDataHelper.AchievementNameNoStoneLeftUnkilled:
                 resultBoolPropertyModel = BoolProperties?.FirstOrDefault(x =>
                     x.VariableName == KnownDataHelper.AchievementNameNoStoneLeftUnkilledVariableName &&
-                    x.MapName == modelHelper.GetMapName());
+                    x.MapName == achievementMissionModel.MapName);
+                achievementMissionModel.Value = resultBoolPropertyModel is not null && resultBoolPropertyModel.Value;
 
-                modelHelper.SetValue(resultBoolPropertyModel is not null && resultBoolPropertyModel.Value);
                 break;
             case KnownDataHelper.AchievementNameShadowTactics:
-                resultBoolPropertyModel = BoolProperties?.FirstOrDefault(x => 
+                resultBoolPropertyModel = BoolProperties?.FirstOrDefault(x =>
                     x.VariableName == KnownDataHelper.AchievementNameShadowTacticsVariableName &&
-                    x.MapName == modelHelper.GetMapName());
+                    x.MapName == achievementMissionModel.MapName);
+                achievementMissionModel.Value = resultBoolPropertyModel is not null && resultBoolPropertyModel.Value == false;
 
-                modelHelper.SetValue(resultBoolPropertyModel is not null && resultBoolPropertyModel.Value == false);
-                break;
-            case KnownDataHelper.AchievementNameIfTheWorldWereAVillage:
-                resultBoolPropertyModel = BoolProperties?.FirstOrDefault(x => 
-                    x.VariableName == KnownDataHelper.AchievementNameIfTheWorldWereAVillageVariableName &&
-                    x.MapName == modelHelper.GetMapName());
-
-                modelHelper.SetValue(resultBoolPropertyModel is not null && resultBoolPropertyModel.Value == true);
                 break;
             default:
                 break;
+        }
+    }
+
+    private void EvaluateReachedAchievements(List<AchievementMissionModel> achievementMissionModels)
+    {
+        foreach (var achievementName in KnownDataHelper.AchievementNameAchievementToolTipMappings.Keys)
+        {
+            int reached = 0;
+            string progressInfo = string.Empty;
+
+            switch (achievementName)
+            {
+                case KnownDataHelper.AchievementNameIfTheWorldWereAVillage:
+                    reached = achievementMissionModels.Count(x => x.AchievementName == KnownDataHelper.AchievementNameIfTheWorldWereAVillage && x.Value);
+                    progressInfo = $"{reached}/{KnownDataHelper.MapNameMissionNameMappings.Count} ({Convert.ToDouble(reached) / KnownDataHelper.MapNameMissionNameMappings.Count * 100:0.00} %)";
+
+                    if (reached == KnownDataHelper.MapNameMissionNameMappings.Count)
+                    {
+                        achievementMissionModels.Where(x => x.AchievementName == KnownDataHelper.AchievementNameIfTheWorldWereAVillage).ToList().ForEach(x => { x.ProgressInfo = progressInfo; x.AchievementReached = true; });
+                    }
+                    else
+                    {
+                        achievementMissionModels.Where(x => x.AchievementName == KnownDataHelper.AchievementNameIfTheWorldWereAVillage).ToList().ForEach(x => { x.ProgressInfo = progressInfo; });
+                    }
+
+                    break;
+                case KnownDataHelper.AchievementNameKnockThemOutWithKindness:
+                    reached = achievementMissionModels.Count(x => x.AchievementName == KnownDataHelper.AchievementNameKnockThemOutWithKindness && x.Value);
+                    progressInfo = $"{reached}/{KnownDataHelper.MapNameMissionNameMappings.Count} ({Convert.ToDouble(reached) / KnownDataHelper.MapNameMissionNameMappings.Count * 100:0.00} %)";
+
+                    if (reached == KnownDataHelper.MapNameMissionNameMappings.Count)
+                    {
+                        achievementMissionModels.Where(x => x.AchievementName == KnownDataHelper.AchievementNameKnockThemOutWithKindness).ToList().ForEach(x => { x.ProgressInfo = progressInfo; x.AchievementReached = true; });
+                    }
+                    else
+                    {
+                        achievementMissionModels.Where(x => x.AchievementName == KnownDataHelper.AchievementNameKnockThemOutWithKindness).ToList().ForEach(x => { x.ProgressInfo = progressInfo; });
+                    }
+
+                    break;
+                case KnownDataHelper.AchievementNameNoStoneLeftUnkilled:
+                    reached = achievementMissionModels.Count(x => x.AchievementName == KnownDataHelper.AchievementNameNoStoneLeftUnkilled && x.Value);
+                    progressInfo = $"{reached}/{KnownDataHelper.MapNameMissionNameMappings.Count} ({Convert.ToDouble(reached) / KnownDataHelper.MapNameMissionNameMappings.Count * 100:0.00} %)";
+
+                    if (reached == KnownDataHelper.MapNameMissionNameMappings.Count)
+                    {
+                        achievementMissionModels.Where(x => x.AchievementName == KnownDataHelper.AchievementNameNoStoneLeftUnkilled).ToList().ForEach(x => { x.ProgressInfo = progressInfo; x.AchievementReached = true; });
+                    }
+                    else
+                    {
+                        achievementMissionModels.Where(x => x.AchievementName == KnownDataHelper.AchievementNameNoStoneLeftUnkilled).ToList().ForEach(x => { x.ProgressInfo = progressInfo; });
+                    }
+
+                    break;
+                case KnownDataHelper.AchievementNameShadowTactics:
+                    reached = achievementMissionModels.Count(x => x.AchievementName == KnownDataHelper.AchievementNameShadowTactics && x.Value);
+                    progressInfo = $"{reached}/1 ({Convert.ToDouble(reached) / 1 * 100:0.00} %)";
+
+                    if (reached == 1)
+                    {
+                        achievementMissionModels.Where(x => x.AchievementName == KnownDataHelper.AchievementNameShadowTactics).ToList().ForEach(x => { x.ProgressInfo = progressInfo; x.AchievementReached = true; });
+                    }
+                    else
+                    {
+                        achievementMissionModels.Where(x => x.AchievementName == KnownDataHelper.AchievementNameShadowTactics).ToList().ForEach(x => { x.ProgressInfo = progressInfo; });
+                    }
+
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

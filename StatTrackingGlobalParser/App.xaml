@@ -4,6 +4,9 @@
              xmlns:local="clr-namespace:StatTrackingGlobalParser"
              StartupUri="Views/WindowMain.xaml">
     <Application.Resources>
-         
+
+        <Color x:Key="GreenColor">#92AB63</Color>
+        <SolidColorBrush x:Key="GreenColorBrush" Color="{StaticResource GreenColor}" />
+
     </Application.Resources>
 </Application>

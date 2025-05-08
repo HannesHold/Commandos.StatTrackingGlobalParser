@@ -81,10 +81,10 @@
 
                         <ListView.View>
                             <GridView>
+                                <GridViewColumn Header="Mission no." Width="80" DisplayMemberBinding="{Binding MissionNo}" />
                                 <GridViewColumn Header="Mission name" Width="200" DisplayMemberBinding="{Binding MissionName}" />
                                 <GridViewColumn Header="Map name" Width="200" DisplayMemberBinding="{Binding MapName}" />
-                                <GridViewColumn Header="Achievement name" Width="200" DisplayMemberBinding="{Binding AchievementName}">
-                                </GridViewColumn>
+                                <GridViewColumn Header="Achievement name" Width="200" DisplayMemberBinding="{Binding AchievementName}" />
                                 <GridViewColumn Header="Value" Width="100" x:Name="CheckBoxColumnMissions">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
@@ -93,7 +93,7 @@
                                                     <Style TargetType="Grid">
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Value}" Value="True">
-                                                                <Setter Property="Background" Value="#92ab63" />
+                                                                <Setter Property="Background" Value="{StaticResource GreenColorBrush}" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -104,6 +104,7 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
+                                <GridViewColumn Header="Progress info" Width="140" DisplayMemberBinding="{Binding ProgressInfo}" />
                             </GridView>
                         </ListView.View>
                     </ListView>
@@ -133,6 +134,7 @@
                             <GridView>
                                 <GridViewColumn Header="Achievement name" Width="200" DisplayMemberBinding="{Binding AchievementName}" />
                                 <GridViewColumn Header="Map name" Width="200" DisplayMemberBinding="{Binding MapName}" />
+                                <GridViewColumn Header="Mission no." Width="80" DisplayMemberBinding="{Binding MissionNo}" />
                                 <GridViewColumn Header="Mission name" Width="200" DisplayMemberBinding="{Binding MissionName}" />
                                 <GridViewColumn Header="Value" Width="100" x:Name="CheckBoxColumnAchievements">
                                     <GridViewColumn.CellTemplate>
@@ -142,7 +144,7 @@
                                                     <Style TargetType="Grid">
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Value}" Value="True">
-                                                                <Setter Property="Background" Value="#92ab63" />
+                                                                <Setter Property="Background" Value="{StaticResource GreenColorBrush}" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -153,6 +155,7 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
+                                <GridViewColumn Header="Progress info" Width="140" DisplayMemberBinding="{Binding ProgressInfo}" />
                             </GridView>
                         </ListView.View>
                     </ListView>
@@ -170,7 +173,7 @@
                     <ListView ItemsSource="{Binding BoolPropertiesView}">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Map" Width="100" DisplayMemberBinding="{Binding Map}" />
+                                <GridViewColumn Header="Map no." Width="100" DisplayMemberBinding="{Binding MapNo}" />
                                 <GridViewColumn Header="Map name" Width="200" DisplayMemberBinding="{Binding MapName}" />
                                 <GridViewColumn Header="Start index" Width="100" DisplayMemberBinding="{Binding StartIndex}" />
                                 <GridViewColumn Header="Variable name" Width="200" DisplayMemberBinding="{Binding VariableName}" />
@@ -183,12 +186,12 @@
                                                     <Style TargetType="Grid">
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Value}" Value="True">
-                                                                <Setter Property="Background" Value="#92ab63" />
+                                                                <Setter Property="Background" Value="{StaticResource GreenColorBrush}" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Grid.Style>
-                                                
+
                                                 <CheckBox IsEnabled="False" IsChecked="{Binding Value}" HorizontalAlignment="Center" Margin="-10,0,0,0" />
                                             </Grid>
                                         </DataTemplate>
