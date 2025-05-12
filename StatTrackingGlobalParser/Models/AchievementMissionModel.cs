@@ -23,6 +23,8 @@ public class AchievementMissionModel
 
     public bool Value { get; set; }
 
+    public string? CompletionTime { get; set; }
+
     public string? ProgressInfo { get; set; }
 
     public string? AchievementToolTip { get; set; }

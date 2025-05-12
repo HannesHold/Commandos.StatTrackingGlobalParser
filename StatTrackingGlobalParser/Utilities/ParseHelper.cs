@@ -44,9 +44,12 @@ public static class ParseHelper
 
         while (true)
         {
+            if (currentIndex < 0) {  break; }
+
             // Skip some non-printable character values
             if (!firstStringCharacterFound && source[currentIndex] == 0x00 || 
                 !firstStringCharacterFound && source[currentIndex] == 0x0D ||
+                !firstStringCharacterFound && source[currentIndex] == 0x0E ||
                 !firstStringCharacterFound && source[currentIndex] == 0x0F)
             {
                 if (direction)
@@ -64,6 +67,7 @@ public static class ParseHelper
             // Skip some non-printable character values
             if (firstStringCharacterFound && source[currentIndex] == 0x00 || 
                 firstStringCharacterFound && source[currentIndex] == 0x0D ||
+                firstStringCharacterFound && source[currentIndex] == 0x0E ||
                 firstStringCharacterFound && source[currentIndex] == 0x0F)
             {
                 break;

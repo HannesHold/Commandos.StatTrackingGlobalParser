@@ -8,7 +8,7 @@
         xmlns:utilities="clr-namespace:StatTrackingGlobalParser.Utilities"
         mc:Ignorable="d"
         Icon="pack://application:,,,/StatTrackingGlobalParser;component/Assets/Logo.png"
-        Title="{Binding Title, FallbackValue='Commandos.StatTrackingGlobalParser'}" Height="768" Width="1024">
+        Title="{Binding Title, FallbackValue='Commandos.StatTrackingGlobalParser'}" Height="768" Width="1200">
 
     <Window.DataContext>
         <viewModels:VmWindowMain />
@@ -104,6 +104,7 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
+                                <GridViewColumn Header="Completion time" Width="140" DisplayMemberBinding="{Binding CompletionTime}" />
                                 <GridViewColumn Header="Progress info" Width="140" DisplayMemberBinding="{Binding ProgressInfo}" />
                             </GridView>
                         </ListView.View>
@@ -155,6 +156,7 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
+                                <GridViewColumn Header="Completion time" Width="140" DisplayMemberBinding="{Binding CompletionTime}" />
                                 <GridViewColumn Header="Progress info" Width="140" DisplayMemberBinding="{Binding ProgressInfo}" />
                             </GridView>
                         </ListView.View>
@@ -197,6 +199,29 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </TabItem>
+
+                <TabItem>
+                    <TabItem.Header>
+                        <TextBlock>
+                            <Run Text="Parsed float properties" />
+                            <Run Text=" (" />
+                            <Run Text="{Binding FloatPropertiesView.Count, Mode=OneWay, FallbackValue='0'}" />
+                            <Run Text=")" />
+                        </TextBlock>
+                    </TabItem.Header>
+                    <ListView ItemsSource="{Binding FloatPropertiesView}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Map no." Width="100" DisplayMemberBinding="{Binding MapNo}" />
+                                <GridViewColumn Header="Map name" Width="200" DisplayMemberBinding="{Binding MapName}" />
+                                <GridViewColumn Header="Start index" Width="100" DisplayMemberBinding="{Binding StartIndex}" />
+                                <GridViewColumn Header="Variable name" Width="200" DisplayMemberBinding="{Binding VariableName}" />
+                                <GridViewColumn Header="Hex value" Width="240" DisplayMemberBinding="{Binding HexValue}" />
+                                <GridViewColumn Header="Value" Width="100" DisplayMemberBinding="{Binding Value}" />
                             </GridView>
                         </ListView.View>
                     </ListView>

@@ -27,14 +27,18 @@ public partial class VmWindowMain : ObservableObject
 
     private const string KeyCompletionTime = "CompletionTime"; // Map data start identifier
     private const string KeyNone = "None"; // Map data end identifier
+    private const string KeyFloatProperty = "FloatProperty"; // General float property identifier
     private const string KeyBoolProperty = "BoolProperty"; // General boolean property identifier
 
     private byte[]? _fileContent;
     private int _currentParserMap;
     private string? _currentParserMapName;
 
-    private readonly int _hexValueLength = 14;
-    private readonly int _valueSkip = 9;
+    private readonly int _booleanPropertyHexValueLength = 14;
+    private readonly int _booleanPropertyValueSkip = 9;
+
+    private readonly int _floatPropertyHexValueLength = 14;
+    private readonly int _floatPropertyValueSkip = 10;
 
     #endregion
 
@@ -46,6 +50,12 @@ public partial class VmWindowMain : ObservableObject
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ParseCommand))]
     private string _filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Commandos\\Saved\\SaveGames\\StatTrackingGlobal.sav");
+
+    [ObservableProperty]
+    private ObservableCollection<FloatPropertyModel>? _floatProperties = [];
+
+    [ObservableProperty]
+    private ICollectionView? _floatPropertiesView;
 
     [ObservableProperty]
     private ObservableCollection<BoolPropertyModel>? _boolProperties = [];
@@ -86,12 +96,7 @@ public partial class VmWindowMain : ObservableObject
             _currentParserMapName = null;
 
             // Initialize collections
-            BoolProperties = [];
-            BoolPropertiesView = CollectionViewSource.GetDefaultView(BoolProperties);
-            Achievements = [];
-            AchievementsView = CollectionViewSource.GetDefaultView(Achievements);
-            Missions = [];
-            MissionsView = CollectionViewSource.GetDefaultView(Missions);
+            InitializeCollections();
 
             // Start parsing
             ReadFileContent();
@@ -125,12 +130,7 @@ public partial class VmWindowMain : ObservableObject
         try
         {
             // Initialize collections
-            BoolProperties = [];
-            BoolPropertiesView = CollectionViewSource.GetDefaultView(BoolProperties);
-            Achievements = [];
-            AchievementsView = CollectionViewSource.GetDefaultView(Achievements);
-            Missions = [];
-            MissionsView = CollectionViewSource.GetDefaultView(Missions);
+            InitializeCollections();
         }
         catch (Exception ex)
         {
@@ -180,6 +180,18 @@ public partial class VmWindowMain : ObservableObject
 
     #region Methods
 
+    private void InitializeCollections()
+    {
+        FloatProperties = [];
+        FloatPropertiesView = CollectionViewSource.GetDefaultView(FloatProperties);
+        BoolProperties = [];
+        BoolPropertiesView = CollectionViewSource.GetDefaultView(BoolProperties);
+        Achievements = [];
+        AchievementsView = CollectionViewSource.GetDefaultView(Achievements);
+        Missions = [];
+        MissionsView = CollectionViewSource.GetDefaultView(Missions);
+    }
+
     private void ReadFileContent()
     {
         _fileContent = File.ReadAllBytes(FilePath);
@@ -193,7 +205,34 @@ public partial class VmWindowMain : ObservableObject
         {
             _currentParserMap++;
             _currentParserMapName = ParseHelper.ParseNameFromStartIndex(_fileContent, First, false);
+            ParseFloatProperties(First, Second);
             ParseBoolProperties(First, Second);
+        }
+    }
+
+    private void ParseFloatProperties(int startIndex, int endIndex)
+    {
+        if (_fileContent is null || _fileContent.Length == 0) { throw new InvalidDataException($"No file content present in file: {FilePath}"); }
+
+        var fileContentArea = _fileContent.AsSpan(startIndex, endIndex - startIndex).ToArray();
+
+        foreach (int index in ParseHelper.PatternAt(fileContentArea, Encoding.UTF8.GetBytes(KeyFloatProperty)))
+        {
+            var variableName = ParseHelper.ParseNameFromStartIndex(fileContentArea, index, false);
+            var hexValue = BitConverter.ToString(fileContentArea.AsSpan(index + KeyFloatProperty.Length, _floatPropertyHexValueLength).ToArray()).Replace('-', '.');
+            var value = BitConverter.ToSingle(fileContentArea.AsSpan(index + KeyFloatProperty.Length, _floatPropertyHexValueLength).ToArray().Skip(_floatPropertyValueSkip).Take(4).ToArray());
+
+            var floatPropertyModel = new FloatPropertyModel()
+            {
+                MapNo = _currentParserMap,
+                MapName = _currentParserMapName,
+                StartIndex = index,
+                VariableName = variableName,
+                HexValue = hexValue,
+                Value = value
+            };
+
+            FloatProperties?.Add(floatPropertyModel);
         }
     }
 
@@ -206,8 +245,8 @@ public partial class VmWindowMain : ObservableObject
         foreach (int index in ParseHelper.PatternAt(fileContentArea, Encoding.UTF8.GetBytes(KeyBoolProperty)))
         {
             var variableName = ParseHelper.ParseNameFromStartIndex(fileContentArea, index, false);
-            var hexValue = BitConverter.ToString(fileContentArea.AsSpan(index + KeyBoolProperty.Length, _hexValueLength).ToArray()).Replace('-', '.');
-            var value = fileContentArea.AsSpan(index + KeyBoolProperty.Length, _hexValueLength).ToArray().Skip(_valueSkip).Take(1).ToArray();
+            var hexValue = BitConverter.ToString(fileContentArea.AsSpan(index + KeyBoolProperty.Length, _booleanPropertyHexValueLength).ToArray()).Replace('-', '.');
+            var value = fileContentArea.AsSpan(index + KeyBoolProperty.Length, _booleanPropertyHexValueLength).ToArray().Skip(_booleanPropertyValueSkip).Take(1).ToArray();
 
             var boolPropertyModel = new BoolPropertyModel()
             {
@@ -252,6 +291,7 @@ public partial class VmWindowMain : ObservableObject
                 };
 
                 EvaluateReachedAchievementValue(achievementModel);
+                EvaluateCompletionTime(achievementModel);
 
                 achievements.Add(achievementModel);
             }
@@ -291,6 +331,7 @@ public partial class VmWindowMain : ObservableObject
                 };
 
                 EvaluateReachedAchievementValue(achievementMissionModel);
+                EvaluateCompletionTime(achievementMissionModel);
 
                 missions.Add(achievementMissionModel);
             }
@@ -341,7 +382,21 @@ public partial class VmWindowMain : ObservableObject
         }
     }
 
-    private void EvaluateReachedAchievements(List<AchievementMissionModel> achievementMissionModels)
+    private void EvaluateCompletionTime(AchievementMissionModel achievementMissionModel)
+    {
+        var completionTime = FloatProperties?.FirstOrDefault(x => x.MapName == achievementMissionModel.MapName && x.VariableName == KeyCompletionTime)?.Value;
+
+        if (completionTime is null)
+        {
+            achievementMissionModel.CompletionTime = $"{TimeSpan.FromSeconds(0)}";
+        }
+        else
+        {
+            achievementMissionModel.CompletionTime = $"{TimeSpan.FromSeconds(Convert.ToDouble(completionTime))}";
+        }
+    }
+
+    private static void EvaluateReachedAchievements(List<AchievementMissionModel> achievementMissionModels)
     {
         foreach (var achievementName in KnownDataHelper.AchievementNameAchievementToolTipMappings.Keys)
         {
@@ -413,7 +468,13 @@ public partial class VmWindowMain : ObservableObject
     }
 
     private void UpdateViewsWithFilter(string? value)
-    {
+    {       
+        if (FloatPropertiesView is not null)
+        {
+            FloatPropertiesView.Filter = o => string.IsNullOrEmpty(value) || $"{o}".Contains(value, StringComparison.CurrentCultureIgnoreCase);
+            FloatPropertiesView.Refresh();
+        }
+
         if (BoolPropertiesView is not null)
         {
             BoolPropertiesView.Filter = o => string.IsNullOrEmpty(value) || $"{o}".Contains(value, StringComparison.CurrentCultureIgnoreCase);
